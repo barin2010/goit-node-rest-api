@@ -10,10 +10,6 @@ app.use(morgan("tiny"));
 app.use(cors());
 app.use(express.json());
 
-// app.get("/", (reg, res) => {
-//   res.send("<H1>Home page</H1>");
-// });
-
 app.use("/api/contacts", contactsRouter);
 
 app.use((_, res) => {

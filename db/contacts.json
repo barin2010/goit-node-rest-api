@@ -52,21 +52,5 @@
     "name": "Thomas Lucas",
     "email": "nec@Nulla.com",
     "phone": "(704) 398-7993"
-  },
-  {
-    "id": 11,
-    "name": {
-      "name": "Ivan Ivanov",
-      "email": "uyrirudenko@gmail.com",
-      "phone": "(095)14576534"
-    }
-  },
-  {
-    "id": 12,
-    "name": {
-      "name": "Uyri Ivanov",
-      "email": "uyrirudenko21@gmail.com",
-      "phone": "(095)14566534"
-    }
   }
 ]

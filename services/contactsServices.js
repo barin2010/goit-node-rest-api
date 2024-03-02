@@ -1,6 +1,7 @@
 import { fileURLToPath } from "url";
 import path from "path";
 import { promises as fs } from "fs";
+import { nanoid } from "nanoid";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -33,7 +34,7 @@ async function removeContact(contactId) {
 async function addContact(name, email, phone) {
   const data = await fs.readFile(contactsPath, "utf-8");
   const contacts = JSON.parse(data);
-  const newContact = { id: contacts.length + 1, name, email, phone };
+  const newContact = { id: nanoid(), name, email, phone };
   contacts.push(newContact);
   await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
   return newContact;

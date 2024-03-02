@@ -11,7 +11,6 @@ export const getAllContacts = async (req, res, next) => {
     res.json(result);
   } catch (error) {
     next(error);
-    // res.status(500).json({ message: error.message });
   }
 };
 
@@ -21,16 +20,10 @@ export const getOneContact = async (req, res, next) => {
     const result = await contactsService.getContactById(id);
     if (!result) {
       throw HttpError(404, "Not found");
-      // const error = new Error(`Contact with id=${id} not found`);
-      // error.status = 404;
-      // throw error;
-      // res.status(404).json({ message: `Contact with id=${id} not found` });
     }
     return res.json(result);
   } catch (error) {
     next(error);
-    // const { status = 500, message = "Server Error" } = error;
-    // res.status(status).json({ message });
   }
 };
 
