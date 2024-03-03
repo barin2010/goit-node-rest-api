@@ -39,10 +39,28 @@ async function addContact(name, email, phone) {
   await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
   return newContact;
 }
+async function updateContactById(contactId, newData) {
+  try {
+    const data = await fs.readFile(contactsPath, "utf-8");
+    const contacts = JSON.parse(data);
+    const index = contacts.findIndex((contact) => contact.id === contactId);
+    if (index === -1) {
+      return null;
+    }
+
+    const updatedContact = { ...contacts[index], ...newData };
+    contacts[index] = updatedContact;
+    await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+    return updatedContact;
+  } catch (error) {
+    throw error;
+  }
+}
 
 export const contactsService = {
   listContacts,
   getContactById,
   removeContact,
   addContact,
+  updateContactById,
 };
