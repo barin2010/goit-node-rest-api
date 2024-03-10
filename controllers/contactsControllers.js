@@ -76,7 +76,6 @@ export const updateStatusContact = async (req, res, next) => {
     const { id } = req.params;
     const { favorite } = req.body;
 
-    // Перевіряємо, чи передано коректне значення favorite
     if (typeof favorite !== "boolean") {
       throw HttpError(
         400,
@@ -89,12 +88,10 @@ export const updateStatusContact = async (req, res, next) => {
       { favorite }
     );
 
-    // Перевіряємо, чи контакт був успішно оновлений
     if (!updatedContact) {
       throw HttpError(404, "Not found");
     }
 
-    // Відправляємо відповідь з оновленим контактом
     res.status(200).json(updatedContact);
   } catch (error) {
     next(error);
