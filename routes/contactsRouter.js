@@ -22,6 +22,6 @@ contactsRouter.post("/", createContact);
 
 contactsRouter.put("/:id", isVlidId, updateContact);
 
-contactsRouter.patch("/:id", isVlidId, updateStatusContact);
+contactsRouter.patch("/:id/favorite", isVlidId, updateStatusContact);
 
 export default contactsRouter;
