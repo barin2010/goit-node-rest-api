@@ -32,7 +32,7 @@ export const deleteContact = async (req, res, next) => {
     const { id } = req.params;
     const deletedContact = await contactsService.removeContact(id); 
     if (!deletedContact) {
-      throw new HttpError(404, "Not found"); 
+      throw  HttpError(404, "Not found"); 
     }
     res.json(deletedContact); 
   } catch (error) {
