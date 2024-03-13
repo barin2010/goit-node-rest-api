@@ -30,11 +30,11 @@ export const getOneContact = async (req, res, next) => {
 export const deleteContact = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const result = contactsService.removeContact(id);
-    if (!result) {
-      throw HttpError(404, "Not found");
+    const deletedContact = await contactsService.removeContact(id); 
+    if (!deletedContact) {
+      throw  HttpError(404, "Not found"); 
     }
-    res.json({ message: "Delete success" });
+    res.json(deletedContact); 
   } catch (error) {
     next(error);
   }
@@ -60,12 +60,44 @@ export const updateContact = async (req, res, next) => {
     if (error) {
       throw HttpError(400, error.message);
     }
+
+    if (Object.keys(req.body).length === 0) {
+      throw HttpError(400, "Body must have at least one field");
+    }
+
     const { id } = req.params;
-    const result = await contactsService.getContactById(id, req.body);
+    const result = await contactsService.updateContactId(id, req.body);
     if (!result) {
       throw HttpError(404, "Not found");
     }
     res.json(result);
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const updateStatusContact = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { favorite } = req.body;
+
+    if (typeof favorite !== "boolean") {
+      throw HttpError(
+        400,
+        "Invalid value for 'favorite'. It should be a boolean."
+      );
+    }
+
+    const updatedContact = await contactsService.updateFavoriteStatusContact(
+      id,
+      { favorite }
+    );
+
+    if (!updatedContact) {
+      throw HttpError(404, "Not found");
+    }
+
+    res.status(200).json(updatedContact);
   } catch (error) {
     next(error);
   }

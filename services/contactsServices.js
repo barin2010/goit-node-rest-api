@@ -1,48 +1,19 @@
-import { fileURLToPath } from "url";
-import path from "path";
-import { promises as fs } from "fs";
-import { nanoid } from "nanoid";
+import Contact from "../models/Contact.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const contactsPath = path.join(__dirname, "../db/contacts.json");
-
-async function listContacts() {
-  const data = await fs.readFile(contactsPath, "utf-8");
-  return JSON.parse(data);
-}
-
-async function getContactById(contactId) {
-  const data = await fs.readFile(contactsPath, "utf-8");
-  const contacts = JSON.parse(data);
-  return contacts.find((contact) => contact.id === contactId) || null;
-}
-
-async function removeContact(contactId) {
-  const data = await fs.readFile(contactsPath, "utf-8");
-  const contacts = JSON.parse(data);
-  const removedContact = contacts.find((contact) => contact.id === contactId);
-  if (!removedContact) return null;
-  const updatedContacts = contacts.filter(
-    (contact) => contact.id !== contactId
-  );
-  await fs.writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2));
-  return removedContact;
-}
-
-async function addContact(name, email, phone) {
-  const data = await fs.readFile(contactsPath, "utf-8");
-  const contacts = JSON.parse(data);
-  const newContact = { id: nanoid(), name, email, phone };
-  contacts.push(newContact);
-  await fs.writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-  return newContact;
-}
+const listContacts = () => Contact.find({}, "-createdAt -updatedAt");
+const addContact = (data) => Contact.create(data);
+const getContactById = (id) => Contact.findById(id);
+const updateContactId = (id, data) =>
+  Contact.findByIdAndUpdate(id, data, { new: true });
+const removeContact = (id) => Contact.findByIdAndDelete(id);
+const updateFavoriteStatusContact = (id, data) =>
+  Contact.findByIdAndUpdate(id, data, { new: true });
 
 export const contactsService = {
   listContacts,
   getContactById,
   removeContact,
   addContact,
+  updateContactId,
+  updateFavoriteStatusContact,
 };
