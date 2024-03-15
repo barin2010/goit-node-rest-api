@@ -17,7 +17,6 @@ const signup = async (req, res) => {
   }
   const newUser = await authServises.signup(req.body);
   res.status(201).json({
-    username: newUser.username,
     email: newUser.email,
   });
 };
