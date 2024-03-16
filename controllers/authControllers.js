@@ -9,19 +9,20 @@ dotenv.config();
 
 const { JWT_SECRET } = process.env;
 
-const signup = async (req, res) => {
+const register = async (req, res) => {
   const { email } = req.body;
   const user = await authServises.findUser({ email });
   if (user) {
     throw HttpError(409, "Email in use");
   }
-  const newUser = await authServises.signup(req.body);
+  const newUser = await authServises.register(req.body);
   res.status(201).json({
     email: newUser.email,
+    subscription: newUser.subscription,
   });
 };
 
-const signin = async (req, res) => {
+const login = async (req, res) => {
   const { email, password } = req.body;
   const user = await authServises.findUser({ email });
   if (!user) {
@@ -44,7 +45,33 @@ const signin = async (req, res) => {
   res.json({ token });
 };
 
+const logout = async (req, res) => {
+  try {
+    // Отримуємо _id поточного користувача з об'єкта req.user, який був доданий мідлваром authenticate
+    const userId = req.user._id;
+
+    // Знаходимо користувача за _id
+    const user = await User.findById(userId);
+
+    // Якщо користувач не існує, повертаємо помилку Unauthorized
+    if (!user) {
+      return res.status(401).json({ error: "Not authorized" });
+    }
+
+    // Видаляємо токен у поточного користувача
+    user.token = null;
+    await user.save();
+
+    // Повертаємо успішну відповідь
+    return res.status(204).end();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 export default {
-  signup: ctrlWrapper(signup),
-  signin: ctrlWrapper(signin),
+  register: ctrlWrapper(register),
+  login: ctrlWrapper(login),
+  logout: ctrlWrapper(logout),
 };
