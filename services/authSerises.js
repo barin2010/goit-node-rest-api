@@ -11,3 +11,12 @@ export const register = async (data) => {
 
 export const validatePassword = (password, hashPassword) =>
   bcrypt.compare(password, hashPassword);
+
+export const findById = async (userId) => {
+  try {
+    const user = await User.findById(userId);
+    return user;
+  } catch (error) {
+    throw new Error("User not found");
+  }
+};

@@ -47,23 +47,38 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    // Отримуємо _id поточного користувача з об'єкта req.user, який був доданий мідлваром authenticate
-    const userId = req.user._id;
+    const userId = req.user.id;
 
-    // Знаходимо користувача за _id
-    const user = await User.findById(userId);
+    const user = await authServises.findById(userId);
 
-    // Якщо користувач не існує, повертаємо помилку Unauthorized
     if (!user) {
       return res.status(401).json({ error: "Not authorized" });
     }
 
-    // Видаляємо токен у поточного користувача
     user.token = null;
     await user.save();
 
-    // Повертаємо успішну відповідь
     return res.status(204).end();
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+const current = async (req, res) => {
+  try {
+    const userId = req.user._id;
+
+    const user = await authServises.findById(userId);
+
+    if (!user) {
+      return res.status(401).json({ message: "Not authorized" });
+    }
+
+    return res.status(200).json({
+      email: user.email,
+      subscription: user.subscription,
+    });
   } catch (error) {
     console.error(error);
     return res.status(500).json({ error: "Internal Server Error" });
@@ -74,4 +89,5 @@ export default {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   logout: ctrlWrapper(logout),
+  current: ctrlWrapper(current),
 };
