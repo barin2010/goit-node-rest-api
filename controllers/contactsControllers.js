@@ -9,11 +9,6 @@ export const getAllContacts = async (req, res, next) => {
   const { _id: owner } = req.user;
   const result = await contactsService.listContacts({ owner });
   res.json(result);
-  // try {
-  //   const result = await contactsService.listContacts();
-  //   res.json(result);
-  // } catch (error) {
-  // next(error);
 };
 
 export const getOneContact = async (req, res, next) => {
@@ -46,17 +41,6 @@ export const createContact = async (req, res, next) => {
   const { _id: owner } = req.user;
   const result = await contactsService.addContact({ ...req.body, owner });
   res.status(201).json(result);
-  // try {
-  //   const { error } = createContactSchema.validate(req.body);
-  //   if (error) {
-  //     throw HttpError(400, error.message);
-  //   }
-
-  //   const result = await contactsService.addContact(req.body);
-  //   res.status(201).json(result);
-  // } catch (error) {
-  //   next(error);
-  // }
 };
 
 export const updateContact = async (req, res, next) => {
