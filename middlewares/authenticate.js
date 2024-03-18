@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
 import HttpError from "../helpers/HttpError.js";
-import { findUser } from "../services/authSerises.js";
+import { findUser } from "../services/authServises.js";
 
 dotenv.config();
 

@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 
 import HttpError from "../helpers/HttpError.js";
-import * as authServises from "../services/authSerises.js";
+import * as authServises from "../services/authServises.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
 dotenv.config();
@@ -42,47 +42,29 @@ const login = async (req, res) => {
   };
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
 
-  res.json({ token });
+  await authServises.updateUser({ _id: id }, { token });
+  res.json({
+    token,
+    user: { username: user.username, email, subscription: user.subscription },
+  });
 };
 
 const logout = async (req, res) => {
-  try {
-    const userId = req.user.id;
+  const { _id } = req.user;
+  await authServises.updateUser({ _id }, { token: "" });
 
-    const user = await authServises.findById(userId);
-
-    if (!user) {
-      return res.status(401).json({ error: "Not authorized" });
-    }
-
-    user.token = null;
-    await user.save();
-
-    return res.status(204).end();
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
+  res.json({
+    message: "Signout success",
+  });
 };
 
 const current = async (req, res) => {
-  try {
-    const userId = req.user._id;
+  const { username, email } = req.user;
 
-    const user = await authServises.findById(userId);
-
-    if (!user) {
-      return res.status(401).json({ message: "Not authorized" });
-    }
-
-    return res.status(200).json({
-      email: user.email,
-      subscription: user.subscription,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({ error: "Internal Server Error" });
-  }
+  res.json({
+    email,
+    username,
+  });
 };
 
 export default {

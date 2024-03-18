@@ -4,7 +4,6 @@ import { emailRegexp } from "../constants/user-constants.js";
 
 const userSchrema = new Schema(
   {
-    
     password: {
       type: String,
       required: [true, "Password is required"],

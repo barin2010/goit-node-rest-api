@@ -20,3 +20,6 @@ export const findById = async (userId) => {
     throw new Error("User not found");
   }
 };
+
+export const updateUser = (filter, data) =>
+  User.findOneAndUpdate(filter, data, { new: true });
