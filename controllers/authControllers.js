@@ -1,11 +1,11 @@
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+import "dotenv/config";
 
 import HttpError from "../helpers/HttpError.js";
 import * as authServises from "../services/authServises.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
-dotenv.config();
+// dotenv.config();
 
 const { JWT_SECRET } = process.env;
 
@@ -37,9 +37,7 @@ const login = async (req, res) => {
   }
   const { _id: id } = user;
 
-  const payload = {
-    id,
-  };
+  const payload = { id, email };
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
 
   await authServises.updateUser({ _id: id }, { token });
