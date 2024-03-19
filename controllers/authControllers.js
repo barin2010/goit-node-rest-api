@@ -5,8 +5,6 @@ import HttpError from "../helpers/HttpError.js";
 import * as authServises from "../services/authServises.js";
 import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
-// dotenv.config();
-
 const { JWT_SECRET } = process.env;
 
 const register = async (req, res) => {
@@ -48,12 +46,9 @@ const login = async (req, res) => {
 };
 
 const logout = async (req, res) => {
-  const { _id } = req.user;
-  await authServises.updateUser({ _id }, { token: "" });
-
-  res.json({
-    message: "Signout success",
-  });
+  const { _id: id } = req.user;
+  await authServises.updateUser({ _id: id }, { token: "" });
+  res.json({ message: "Signout success" });
 };
 
 const current = async (req, res) => {
