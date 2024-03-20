@@ -8,23 +8,29 @@ import {
   updateStatusContact,
 } from "../controllers/contactsControllers.js";
 
-import isVlidId from "../middlewares/isValidId.js";
+import verifyContactOwner from "../middlewares/verifyContactOwner.js";
+import verifyToken from "../middlewares/verifyToken.js";
+
 import authenticate from "../middlewares/authenticate.js";
 
 const contactsRouter = express.Router();
 
 contactsRouter.use(authenticate);
 
-contactsRouter.get("/", getAllContacts);
+contactsRouter.get("/", verifyToken, getAllContacts);
 
-contactsRouter.get("/:id", isVlidId, getOneContact);
+contactsRouter.get("/:id", verifyContactOwner, getOneContact);
 
-contactsRouter.delete("/:id", isVlidId, deleteContact);
+contactsRouter.delete("/:id", verifyContactOwner, deleteContact);
 
 contactsRouter.post("/", createContact);
 
-contactsRouter.put("/:id", isVlidId, updateContact);
+contactsRouter.put("/:id", verifyContactOwner, updateContact);
 
-contactsRouter.patch("/:id/favorite", isVlidId, updateStatusContact);
+contactsRouter.patch(
+  "/:id/favorite",
+
+  updateStatusContact
+);
 
 export default contactsRouter;

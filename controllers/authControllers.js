@@ -15,8 +15,10 @@ const register = async (req, res) => {
   }
   const newUser = await authServises.register(req.body);
   res.status(201).json({
-    email: newUser.email,
-    subscription: newUser.subscription,
+    user: {
+      email: newUser.email,
+      subscription: newUser.subscription,
+    },
   });
 };
 
@@ -48,7 +50,7 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   const { _id: id } = req.user;
   await authServises.updateUser({ _id: id }, { token: "" });
-  res.json({ message: "Signout success" });
+  res.sendStatus(204);
 };
 
 const current = async (req, res) => {
