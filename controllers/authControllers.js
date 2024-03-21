@@ -43,7 +43,7 @@ const login = async (req, res) => {
   await authServises.updateUser({ _id: id }, { token });
   res.json({
     token,
-    user: { username: user.username, email, subscription: user.subscription },
+    user: { email, subscription: user.subscription },
   });
 };
 
@@ -54,11 +54,10 @@ const logout = async (req, res) => {
 };
 
 const current = async (req, res) => {
-  const { username, email } = req.user;
+  const { email } = req.user;
 
   res.json({
     email,
-    username,
   });
 };
 
