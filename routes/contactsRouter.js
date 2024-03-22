@@ -8,11 +8,9 @@ import {
   updateStatusContact,
 } from "../controllers/contactsControllers.js";
 
-import verifyContactOwner from "../middlewares/verifyContactOwner.js";
-// import verifyToken from "../middlewares/verifyToken.js";
 import isVlidId from "../middlewares/isValidId.js";
 import validateBody from "../helpers/validateBody.js";
-
+import verifyContactOwner from "../middlewares/verifyContactOwner.js";
 import authenticate from "../middlewares/authenticate.js";
 import {
   createContactSchema,
@@ -23,9 +21,9 @@ const contactsRouter = express.Router();
 
 contactsRouter.use(authenticate);
 
-contactsRouter.get("/", verifyContactOwner, getAllContacts);
+contactsRouter.get("/", getAllContacts);
 
-contactsRouter.get("/:id", isVlidId, getOneContact);
+contactsRouter.get("/:id", verifyContactOwner, isVlidId, getOneContact);
 
 contactsRouter.delete("/:id", isVlidId, deleteContact);
 

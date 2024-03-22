@@ -13,10 +13,10 @@ export const getAllContacts = async (req, res, next) => {
 
 export const getOneContact = async (req, res, next) => {
   try {
-    const { contactId } = req.params;
+    const { id } = req.params;
     const { _id: owner } = req.user;
     const result = await contactsService.getContactById({
-      _id: contactId,
+      _id: id,
       owner,
     });
     if (!result) {

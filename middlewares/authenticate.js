@@ -6,12 +6,13 @@ import { findUser } from "../services/authServises.js";
 
 const { JWT_SECRET } = process.env;
 
-const authenticate = async (req, res, next) => {
+const authenticate = async (req, _, next) => {
   const { authorization } = req.headers;
   if (!authorization) {
-    return next(HttpError(401, "Not authorized"));
+    return next(HttpError(401, "Authorization header not found"));
   }
   const [bearer, token] = authorization.split(" ");
+
   if (bearer !== "Bearer") {
     return next(HttpError(401, "Bearer not found"));
   }
@@ -21,7 +22,9 @@ const authenticate = async (req, res, next) => {
     if (!user) {
       return next(HttpError(401, "User not found"));
     }
-
+    if (!user.token) {
+      return next(HttpError(401, "User already signout"));
+    }
     req.user = user;
     next();
   } catch (error) {
