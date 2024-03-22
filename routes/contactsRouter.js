@@ -25,12 +25,13 @@ contactsRouter.get("/", getAllContacts);
 
 contactsRouter.get("/:id", verifyContactOwner, isVlidId, getOneContact);
 
-contactsRouter.delete("/:id", isVlidId, deleteContact);
+contactsRouter.delete("/:id", verifyContactOwner, isVlidId, deleteContact);
 
 contactsRouter.post("/", validateBody(createContactSchema), createContact);
 
 contactsRouter.put(
   "/:id",
+  verifyContactOwner,
   validateBody(updateContactSchema),
   isVlidId,
   updateContact
@@ -38,6 +39,7 @@ contactsRouter.put(
 
 contactsRouter.patch(
   "/:id/favorite",
+  verifyContactOwner,
   isVlidId,
 
   updateStatusContact
