@@ -41,7 +41,6 @@ contactsRouter.patch(
   "/:id/favorite",
   verifyContactOwner,
   isVlidId,
-
   updateStatusContact
 );
 

@@ -58,6 +58,7 @@ const current = async (req, res) => {
 
   res.json({
     email,
+    subscription: req.user.subscription,
   });
 };
 
