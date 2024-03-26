@@ -62,7 +62,10 @@ export const updateContact = async (req, res, next) => {
     const { id } = req.params;
     const { _id: owner } = req.user;
 
-    const result = await contactsService.updateContactId(id, req.body);
+    const result = await contactsService.updateContactId(
+      { _id: id, owner },
+      req.body
+    );
 
     if (!result) {
       throw HttpError(404, `Contact with id=${id} not found`);
@@ -77,6 +80,7 @@ export const updateStatusContact = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { favorite } = req.body;
+    const { _id: owner } = req.user;
 
     if (typeof favorite !== "boolean") {
       throw HttpError(
@@ -87,6 +91,7 @@ export const updateStatusContact = async (req, res, next) => {
 
     const updatedContact = await contactsService.updateFavoriteStatusContact(
       id,
+      owner,
       { favorite }
     );
 
