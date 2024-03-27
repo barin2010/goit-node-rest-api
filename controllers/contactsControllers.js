@@ -16,7 +16,7 @@ export const getOneContact = async (req, res, next) => {
     const { id } = req.params;
     const { _id: owner } = req.user;
     const result = await contactsService.getContactById({
-      _id: id,
+       id,
       owner,
     });
     if (!result) {
@@ -63,7 +63,7 @@ export const updateContact = async (req, res, next) => {
     const { _id: owner } = req.user;
 
     const result = await contactsService.updateContactId(
-      { _id: id, owner },
+      {  id, owner },
       req.body
     );
 
