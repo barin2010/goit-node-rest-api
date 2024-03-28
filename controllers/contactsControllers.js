@@ -6,20 +6,21 @@ import {
 } from "../schemas/contactsSchemas.js";
 
 export const getAllContacts = async (req, res, next) => {
-  try {
-    const result = await contactsService.listContacts();
-    res.json(result);
-  } catch (error) {
-    next(error);
-  }
+  const { _id: owner } = req.user;
+  const result = await contactsService.listContacts({ owner });
+  res.json(result);
 };
 
 export const getOneContact = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const result = await contactsService.getContactById(id);
+    const { _id: owner } = req.user;
+    const result = await contactsService.getContactById({
+       id,
+      owner,
+    });
     if (!result) {
-      throw HttpError(404, "Not found");
+      throw HttpError(404, `Contact with id=${id} not found`);
     }
     return res.json(result);
   } catch (error) {
@@ -30,45 +31,44 @@ export const getOneContact = async (req, res, next) => {
 export const deleteContact = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const deletedContact = await contactsService.removeContact(id); 
+    const { _id: owner } = req.user;
+    const deletedContact = await contactsService.removeContact({
+      id,
+      owner,
+    });
     if (!deletedContact) {
-      throw  HttpError(404, "Not found"); 
+      throw HttpError(404, `Contact with id=${id} not found`);
     }
-    res.json(deletedContact); 
+    res.json(deletedContact);
   } catch (error) {
     next(error);
   }
 };
 
 export const createContact = async (req, res, next) => {
-  try {
-    const { error } = createContactSchema.validate(req.body);
-    if (error) {
-      throw HttpError(400, error.message);
-    }
+  const { _id: owner } = req.user;
 
-    const result = await contactsService.addContact(req.body);
-    res.status(201).json(result);
-  } catch (error) {
-    next(error);
+  const { error } = createContactSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
   }
+
+  const result = await contactsService.addContact({ ...req.body, owner });
+  res.status(201).json(result);
 };
 
 export const updateContact = async (req, res, next) => {
   try {
-    const { error } = updateContactSchema.validate(req.body);
-    if (error) {
-      throw HttpError(400, error.message);
-    }
-
-    if (Object.keys(req.body).length === 0) {
-      throw HttpError(400, "Body must have at least one field");
-    }
-
     const { id } = req.params;
-    const result = await contactsService.updateContactId(id, req.body);
+    const { _id: owner } = req.user;
+
+    const result = await contactsService.updateContactId(
+      {  id, owner },
+      req.body
+    );
+
     if (!result) {
-      throw HttpError(404, "Not found");
+      throw HttpError(404, `Contact with id=${id} not found`);
     }
     res.json(result);
   } catch (error) {
@@ -80,6 +80,7 @@ export const updateStatusContact = async (req, res, next) => {
   try {
     const { id } = req.params;
     const { favorite } = req.body;
+    const { _id: owner } = req.user;
 
     if (typeof favorite !== "boolean") {
       throw HttpError(
@@ -90,6 +91,7 @@ export const updateStatusContact = async (req, res, next) => {
 
     const updatedContact = await contactsService.updateFavoriteStatusContact(
       id,
+      owner,
       { favorite }
     );
 

@@ -1,13 +1,14 @@
 import Contact from "../models/Contact.js";
 
-const listContacts = () => Contact.find({}, "-createdAt -updatedAt");
+const listContacts = (filter = {}) =>
+  Contact.find(filter, "-createdAt -updatedAt");
 const addContact = (data) => Contact.create(data);
-const getContactById = (id) => Contact.findById(id);
+const getContactById = (id) => Contact.findOne(id);
 const updateContactId = (id, data) =>
-  Contact.findByIdAndUpdate(id, data, { new: true });
-const removeContact = (id) => Contact.findByIdAndDelete(id);
+  Contact.findOneAndUpdate(id, data, { new: true });
+const removeContact = (id) => Contact.findOneAndDelete(id);
 const updateFavoriteStatusContact = (id, data) =>
-  Contact.findByIdAndUpdate(id, data, { new: true });
+  Contact.findOneAndUpdate(id, data, { new: true });
 
 export const contactsService = {
   listContacts,
