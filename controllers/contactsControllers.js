@@ -1,9 +1,10 @@
 import fs from "fs/promises";
 import path from "path";
+// import gravatar from "gravatar";
 
 import { contactsService } from "../services/contactsServices.js";
 import HttpError from "../helpers/HttpError.js";
-// import { createContactSchema } from "../schemas/contactsSchemas.js";
+import { createContactSchema } from "../schemas/contactsSchemas.js";
 
 const avatarsPath = path.resolve("public", "avatars");
 
@@ -12,15 +13,18 @@ console.log(avatarsPath);
 export const createContact = async (req, res, next) => {
   const { _id: owner } = req.user;
   const { path: oldPath, filename } = req.file;
-  const newPath = path.join(avatarsPath, filename);
-  // console.log(req.user);
-  // console.log(req.file);
 
-  // const { error } = createContactSchema.validate(req.body);
-  // if (error) {
-  //   return res.status(400).json({ error: error.details[0].message });
-  // }
+  const newPath = path.join(avatarsPath, filename);
+
+  console.log(req.body);
+  console.log(req.file);
+
+  const { error } = createContactSchema.validate(req.body);
+  if (error) {
+    return res.status(400).json({ error: error.details[0].message });
+  }
   await fs.rename(oldPath, newPath);
+
   const avatarURL = path.join("public", "avatars", filename);
 
   const result = await contactsService.addContact({
