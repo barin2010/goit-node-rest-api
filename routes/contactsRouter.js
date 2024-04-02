@@ -8,7 +8,7 @@ import {
   updateStatusContact,
 } from "../controllers/contactsControllers.js";
 
-import upload from "../middlewares/upload.js";
+
 import isVlidId from "../middlewares/isValidId.js";
 import validateBody from "../helpers/validateBody.js";
 import verifyContactOwner from "../middlewares/verifyContactOwner.js";

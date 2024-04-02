@@ -1,8 +1,8 @@
 import express from "express";
-import multer from "multer";
 
 import authControllers from "../controllers/authControllers.js";
 import validateBody from "../helpers/validateBody.js";
+import upload from "../middlewares/upload.js";
 
 import {
   userRegisterSchema,
@@ -11,7 +11,6 @@ import {
 import authenticate from "../middlewares/authenticate.js";
 
 const authRouter = express.Router();
-const upload = multer();
 
 authRouter.post(
   "/register",
@@ -29,16 +28,9 @@ authRouter.post("/logout", authenticate, authControllers.logout);
 
 authRouter.get("/current", authenticate, authControllers.current);
 
-// contactsRouter.patch(
-//   "/",
-//   upload.single("avatarURL"),
-//   validateBody(createContactSchema),
-//   createContact
-// );
-
 authRouter.patch(
   "/avatars",
-  upload.single("avatar"),
+  upload.single("avatarURL"),
   authenticate,
 
   authControllers.updateAvatar
