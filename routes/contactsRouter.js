@@ -28,12 +28,7 @@ contactsRouter.get("/:id", verifyContactOwner, isVlidId, getOneContact);
 
 contactsRouter.delete("/:id", verifyContactOwner, isVlidId, deleteContact);
 
-contactsRouter.post(
-  "/",
-  upload.single("avatarURL"),
-  validateBody(createContactSchema),
-  createContact
-);
+
 
 contactsRouter.put(
   "/:id",
