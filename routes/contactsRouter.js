@@ -8,6 +8,7 @@ import {
   updateStatusContact,
 } from "../controllers/contactsControllers.js";
 
+
 import isVlidId from "../middlewares/isValidId.js";
 import validateBody from "../helpers/validateBody.js";
 import verifyContactOwner from "../middlewares/verifyContactOwner.js";
@@ -27,7 +28,7 @@ contactsRouter.get("/:id", verifyContactOwner, isVlidId, getOneContact);
 
 contactsRouter.delete("/:id", verifyContactOwner, isVlidId, deleteContact);
 
-contactsRouter.post("/", validateBody(createContactSchema), createContact);
+
 
 contactsRouter.put(
   "/:id",

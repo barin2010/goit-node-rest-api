@@ -1,5 +1,10 @@
 import jwt from "jsonwebtoken";
 import "dotenv/config";
+import gravatar from "gravatar";
+import fs from "fs/promises";
+import path from "path";
+import Jimp from "jimp";
+import multer from "multer";
 
 import HttpError from "../helpers/HttpError.js";
 import * as authServises from "../services/authServises.js";
@@ -7,17 +12,22 @@ import ctrlWrapper from "../decorators/ctrlWrapper.js";
 
 const { JWT_SECRET } = process.env;
 
+const avatarsPath = path.resolve("public", "avatars");
+const upload = multer({ dest: "tmp/" });
+
 const register = async (req, res) => {
   const { email } = req.body;
+  const avatarURL = gravatar.url(email);
   const user = await authServises.findUser({ email });
   if (user) {
     throw HttpError(409, "Email in use");
   }
-  const newUser = await authServises.register(req.body);
+  const newUser = await authServises.regiters({ ...req.body, avatarURL });
   res.status(201).json({
     user: {
       email: newUser.email,
       subscription: newUser.subscription,
+      avatarURL,
     },
   });
 };
@@ -62,9 +72,29 @@ const current = async (req, res) => {
   });
 };
 
+const updateAvatar = async (req, res) => {
+  const { _id: id } = req.user;
+
+  if (!req.file) {
+    return res.status(400).json({ message: "AvatarURL field is required" });
+  }
+
+  const { path: tmpUpload, originalname } = req.file;
+  const image = await Jimp.read(tmpUpload);
+  image.resize(250, 250).write(tmpUpload);
+  const filename = `${id}_${originalname}`;
+  const uploadPath = path.join(avatarsPath, filename);
+  await fs.rename(tmpUpload, uploadPath);
+  const avatarURL = path.join("avatars", filename);
+  await authServises.updateUser({ _id: id }, { avatarURL });
+  res.json({ avatarURL });
+};
+
+
 export default {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   logout: ctrlWrapper(logout),
   current: ctrlWrapper(current),
+  updateAvatar: ctrlWrapper(updateAvatar),
 };
