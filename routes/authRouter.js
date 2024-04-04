@@ -7,6 +7,7 @@ import upload from "../middlewares/upload.js";
 import {
   userRegisterSchema,
   userLoginSchema,
+  userEmailSchema,
 } from "../schemas/usersSchemas.js";
 import authenticate from "../middlewares/authenticate.js";
 
@@ -16,6 +17,12 @@ authRouter.post(
   "/register",
   validateBody(userRegisterSchema),
   authControllers.register
+);
+authRouter.get("/verify/:verificationToken", authControllers.verify);
+authRouter.post(
+  "/verify",
+  validateBody(userEmailSchema),
+  authControllers.resendVerifyEmail
 );
 authRouter.post(
   "/login",
